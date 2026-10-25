@@ -78,6 +78,15 @@ function! s:show_floating_window(event, managed_user_data) abort
 
     let l:contents = []
 
+    if get(l:completion_item, 'insertTextFormat', 1) == 2
+        let l:text_edit = get(l:completion_item, 'textEdit', v:null)
+        let l:snippet = type(l:text_edit) == type({}) && has_key(l:text_edit, 'newText')
+            \ ? l:text_edit.newText : get(l:completion_item, 'insertText', l:completion_item.label)
+        let l:contents += [s:MarkupContent.normalize({
+            \ 'language': &filetype, 'value': l:snippet,
+            \ }, {'compact': !g:lsp_preview_fixup_conceal})]
+    endif
+
     " Add detail field if provided.
     if type(get(l:completion_item, 'detail', v:null)) == type('')
         if !empty(l:completion_item.detail)
