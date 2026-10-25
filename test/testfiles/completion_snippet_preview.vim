@@ -4,6 +4,7 @@ set lines=40 columns=120
 execute 'set runtimepath^=' . fnameescape(getcwd())
 let g:lsp_completion_documentation_enabled = 0
 runtime plugin/lsp.vim
+call assert_equal(0, get(g:, 'lsp_completion_documentation_snippet_enabled', -1), 'snippet preview defaults off')
 runtime autoload/lsp/internal/completion/documentation.vim
 let s:scripts = filter(split(execute('scriptnames'), "\n"),
     \ 'v:val =~# "completion/documentation.vim$"')
@@ -24,6 +25,10 @@ function! s:tick(timer) abort
         call assert_true(pumvisible(), 'completion menu must be visible')
         let l:snippet = "\"key\": {\n\t\"value\": ${1:42}\n}$0"
         let l:before = getline(1, '$')
+        call s:Show(s:event, {'completion_item': {'label': 'example', 'insertTextFormat': 2,
+            \ 'insertText': l:snippet, 'documentation': 'Existing documentation'}})
+        call assert_equal(['Existing documentation'], getbufline(s:GetWindow().get_bufnr(), 1, '$'), 'default preserves documentation')
+        let g:lsp_completion_documentation_snippet_enabled = 1
         for l:field in ['insertText', 'textEdit', 'label']
             let l:item = {'label': l:snippet, 'insertTextFormat': 2,
                 \ 'detail': 'Existing detail', 'documentation': 'Existing documentation'}
@@ -43,6 +48,11 @@ function! s:tick(timer) abort
             call assert_true(stridx(l:contents, 'Existing documentation') >= 0, 'documentation retained')
             call assert_equal(l:before, getline(1, '$'), 'preview must not edit the buffer')
         endfor
+        let g:lsp_completion_documentation_snippet_enabled = 0
+        call s:Show(s:event, {'completion_item': {'label': 'example', 'insertTextFormat': 2,
+            \ 'insertText': l:snippet, 'documentation': 'Existing documentation'}})
+        call assert_equal(['Existing documentation'], getbufline(s:GetWindow().get_bufnr(), 1, '$'), 'explicitly disabling restores documentation')
+        let g:lsp_completion_documentation_snippet_enabled = 1
         call s:Show(s:event, {'completion_item': {'label': 'plain', 'insertText': 'hidden text', 'documentation': 'Ordinary docs'}})
         let l:contents = join(getbufline(s:GetWindow().get_bufnr(), 1, '$'), "\n")
         call assert_equal('Ordinary docs', l:contents, 'ordinary completion unchanged')

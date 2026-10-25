@@ -78,7 +78,7 @@ function! s:show_floating_window(event, managed_user_data) abort
 
     let l:contents = []
 
-    if get(l:completion_item, 'insertTextFormat', 1) == 2
+    if g:lsp_completion_documentation_snippet_enabled && get(l:completion_item, 'insertTextFormat', 1) == 2
         let l:text_edit = get(l:completion_item, 'textEdit', v:null)
         let l:snippet = type(l:text_edit) == type({}) && has_key(l:text_edit, 'newText')
             \ ? l:text_edit.newText : get(l:completion_item, 'insertText', l:completion_item.label)

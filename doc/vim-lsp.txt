@@ -24,6 +24,8 @@ CONTENTS                                                  *vim-lsp-contents*
       g:lsp_completion_action               |g:lsp_completion_action|
       g:lsp_completion_documentation_enabled
 					|g:lsp_completion_documentation_enabled|
+      g:lsp_completion_documentation_snippet_enabled
+                                |g:lsp_completion_documentation_snippet_enabled|
       g:lsp_completion_documentation_delay
 					|g:lsp_completion_documentation_delay|
       g:lsp_diagnostics_enabled             |g:lsp_diagnostics_enabled|
@@ -487,6 +489,21 @@ g:lsp_completion_documentation_enabled   *g:lsp_completion_documentation_enabled
     Example: >
 	let g:lsp_completion_documentation_enabled = 1
 	let g:lsp_completion_documentation_enabled = 0
+
+g:lsp_completion_documentation_snippet_enabled
+                               *g:lsp_completion_documentation_snippet_enabled*
+    Type: |Number|
+    Default: `0`
+
+    Shows snippet source before detail and documentation in the completion
+    documentation popup. Requires |g:lsp_completion_documentation_enabled|.
+    Only affects completion items with snippet insert text format. Snippet
+    placeholders and escape sequences are displayed as received from the
+    language server; completion insertion is unchanged.
+
+    Example: >
+	let g:lsp_completion_documentation_snippet_enabled = 1
+	let g:lsp_completion_documentation_snippet_enabled = 0
 
 g:lsp_completion_documentation_delay       *g:lsp_completion_documentation_delay*
     Type: |Number|
