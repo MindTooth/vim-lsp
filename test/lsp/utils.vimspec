@@ -259,6 +259,22 @@ Describe lsp#utils
         End
     End
 
+    Describe single-line snippet previews
+        It should preserve punctuation and tabs but never insert line breaks
+            Assert Equals(lsp#utils#make_valid_word("\"key\": {\n\t\"value\": 1\n}"), '"key": {')
+            Assert Equals(lsp#utils#make_valid_word("{\r\n\tvalue\r\n}"), '{')
+            Assert Equals(lsp#utils#make_valid_word("[\nvalue\n]"), '[')
+            Assert Equals(lsp#utils#make_valid_word("(\rvalue)"), '(')
+            Assert Equals(lsp#utils#make_valid_word("<tag>\nvalue"), '<tag>')
+            Assert Equals(lsp#utils#make_valid_word("'quoted'\nvalue"), "'quoted'")
+            Assert Equals(lsp#utils#make_valid_word("\"é\": ${1:42}\n}"), '"é": ')
+            Assert Equals(lsp#utils#make_valid_word("\"key\":\tvalue"), "\"key\":\tvalue")
+            Assert Equals(lsp#utils#make_valid_word("\tvalue"), "\tvalue")
+            Assert Equals(lsp#utils#make_valid_word("\nvalue"), '')
+            Assert Equals(lsp#utils#make_valid_word(''), '')
+        End
+    End
+
     Describe lsp#utils#_split_by_eol
 
         It should split text by \r\n

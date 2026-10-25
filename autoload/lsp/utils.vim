@@ -451,7 +451,7 @@ function! lsp#utils#make_valid_word(str) abort
    let l:str = substitute(l:str, '\\\(.\)', '\1', 'g')
    let l:valid = matchstr(l:str, '^[^"'' (<{\[\t\r\n]\+')
    if empty(l:valid)
-       return l:str
+       return matchstr(l:str, '^[^\r\n]*')
    endif
    if l:valid =~# ':$'
        return l:valid[:-2]
