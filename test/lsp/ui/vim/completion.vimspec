@@ -6,6 +6,27 @@ Describe lsp#uivim#completion
         setlocal omnifunc=lsp#omni#complete
     End
 
+    It should accept a multiline snippet without tabstops or textEdit
+        if !has('nvim')
+            Skip This headless completion test requires Neovim
+        endif
+        let l:script = tempname()
+        let l:result = tempname()
+        let l:root = getcwd()
+        call writefile([
+            \ 'let $COMPLETION_RESULT = ' . string(l:result),
+            \ 'source ' . fnameescape(l:root . '/test/testfiles/completion_multiline_snippet.vim'),
+            \ ], l:script)
+        try
+            call system(shellescape(v:progpath) . ' --headless -u NONE -i NONE -n -S ' . shellescape(l:script))
+            Assert Equals(v:shell_error, 0)
+            Assert Equals(readfile(l:result), [])
+        finally
+            call delete(l:script)
+            call delete(l:result)
+        endtry
+    End
+
     It should expand simple snippet with multibyte chars
         Skip This test needs asynchronous process and snippetSupport=true
 

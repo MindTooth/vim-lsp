@@ -55,7 +55,8 @@ function! s:on_complete_done() abort
   let s:context['server_name'] = l:managed_user_data['server_name']
   let s:context['completion_item'] = l:managed_user_data['completion_item']
   let s:context['start_character'] = l:managed_user_data['start_character']
-  let s:context['complete_word'] = l:managed_user_data['complete_word']
+  " Compare against the actual preview, which may be shorter than the LSP text.
+  let s:context['complete_word'] = v:completed_item['word']
   call timer_start(0, {-> s:on_complete_done_after()})
 endfunction
 
